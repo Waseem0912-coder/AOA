@@ -1,3 +1,5 @@
+import sys
+
 def brute_force_min_cost_paths(cost, k, current_platform, depth):
     n = len(cost)
     if depth == n:
@@ -5,7 +7,6 @@ def brute_force_min_cost_paths(cost, k, current_platform, depth):
 
     min_cost = float('inf')
     unique_paths = set()
-    paths_with_min_cost = []
     for jump in range(1, k + 1):
         next_platform = current_platform + jump
         cost_to_next, paths = brute_force_min_cost_paths(cost, k, next_platform, depth + 1)
@@ -25,10 +26,19 @@ def brute_force_min_cost_paths(cost, k, current_platform, depth):
     paths_with_min_cost = [list(path) for path in unique_paths]
     return min_cost, paths_with_min_cost
 
-n = 8
-k = 3 
-cost = [8, 9, 6, 3, 2, 5, 4, 1]
+# Reading input from stdin
+first_line = sys.stdin.readline().strip()
+n, k = map(int, first_line.split())
+
+second_line = sys.stdin.readline().strip()
+cost = list(map(int, second_line.split()))
 
 min_cost, paths = brute_force_min_cost_paths(cost, k, 0, 0)
-print('Minimum cost:', min_cost)
-print('Path with minimum cost:', ', '.join(map(str, paths[0][::-1])))
+
+# Formatting output
+if paths:
+    output = ' '.join(map(str, paths[0][::-1]))
+else:
+    output = 'No path found'
+
+print(output)

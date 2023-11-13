@@ -1,9 +1,10 @@
+import sys
 
 class SegmentTree:
     def __init__(self, size):
         self.size = size
         self.tree = [float('inf')] * (2 * size)
-        self.index_tree = [None] * (2 * size)  # Additional tree to store indices
+        self.index_tree = [None] * (2 * size)
 
     def update(self, index, value):
         idx = index
@@ -48,7 +49,7 @@ def minCostDPWithSegmentTreeRevised(cost, k):
 
     min_costs = [float('inf')] * n
     min_costs[0] = cost[0]
-    paths = [[] for _ in range(n)]  # Initialize paths
+    paths = [[] for _ in range(n)]
     paths[0] = [0]
 
     for i in range(1, n):
@@ -60,11 +61,15 @@ def minCostDPWithSegmentTreeRevised(cost, k):
 
     return min_costs[-1], paths[-1]
 
-# Calculate the minimum cost and path with the revised approach
-n = 8  # Number of platforms
-k = 4   # Maximum jump length
-cost = [12, 5, 8, 9, 11, 13, 16, 1]  # Given cost for each platform
+# Reading input from stdin
+first_line = sys.stdin.readline().strip()
+n, k = map(int, first_line.split())
+
+second_line = sys.stdin.readline().strip()
+cost = list(map(int, second_line.split()))
 
 min_cost_revised, path_revised = minCostDPWithSegmentTreeRevised(cost, k)
-print("Minimum Cost:", min_cost_revised)
-print("Path:", path_revised)
+
+# Formatting output
+output = ' '.join(map(str, path_revised))
+print(output)

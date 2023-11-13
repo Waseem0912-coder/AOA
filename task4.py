@@ -1,3 +1,4 @@
+import sys
 from collections import deque
 
 def min_cost_linear_with_path(cost, k):
@@ -27,15 +28,15 @@ def min_cost_linear_with_path(cost, k):
 
     return dp[min_cost_index], path[min_cost_index]
 
-"""# Example usage
-n = 8  # Number of platforms
-k = 4   # Maximum jump length
-cost = [12, 5, 8, 9, 11, 13, 16, 1]  # Given cost for each platform
-"""
-n = 8
-k = 3 
-cost = [8, 9, 6, 3, 2, 5, 4, 1]
+# Reading input from stdin
+first_line = sys.stdin.readline().strip()
+n, k = map(int, first_line.split())
+
+second_line = sys.stdin.readline().strip()
+cost = list(map(int, second_line.split()))
 
 min_cost, min_path = min_cost_linear_with_path(cost, k)
-print('Minimum cost:', min_cost)
-print('Minimum cost path:', min_path)
+
+# Formatting output
+output = ' '.join(map(str, min_path))
+print(output)

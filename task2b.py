@@ -1,44 +1,36 @@
-def min_cost_rec(cost, k):
+import sys
+
+def min_cost_bottom_up(cost, k):
     n = len(cost)
-    memo = [None] * n
-    prev = [-1] * n
+    dp = [float('inf')] * n
+    dp[0] = cost[0]
 
-    def dp(i):
-        if i == 0:
-            return cost[0]
-        if memo[i] is not None:
-            return memo[i]
+    for i in range(1, n):
+        for j in range(max(0, i-k), i):
+            if dp[j] + cost[i] < dp[i]:
+                dp[i] = dp[j] + cost[i]
 
-        min_cost = float('inf')
-        for j in range(1, min(i, k) + 1):
-            current_cost = dp(i - j) + cost[i]
-            if current_cost < min_cost:
-                min_cost = current_cost
-                prev[i] = i - j
+    min_cost = min(dp[-k:])  # Minimum cost in the last k platforms
 
-        memo[i] = min_cost
-        return min_cost
-
-    # Find the end platform that gives minimum cost to cross the river
-    min_cost = min(dp(i) for i in range(n - k, n))
-
-    # Find the corresponding end platform
-    end_platform = next(i for i in range(n - k, n) if memo[i] == min_cost)
-
-    # Reconstruct the path
+    # Path reconstruction
     path = []
-    while end_platform != -1:
-        path.append(end_platform)
-        end_platform = prev[end_platform]
+    for i in range(n - 1, -1, -1):
+        if dp[i] == min_cost:
+            path.append(i)
+            min_cost -= cost[i]
+
     path.reverse()
+    return dp[-1], path
 
-    return min_cost, path
+# Reading input from stdin
+first_line = sys.stdin.readline().strip()
+n, k = map(int, first_line.split())
 
-# Example usage
-n = 8  # Number of platforms
-k = 4   # Maximum jump length
-cost = [12, 5, 8, 9, 11, 13, 16, 1]  # Given cost for each platform
+second_line = sys.stdin.readline().strip()
+cost = list(map(int, second_line.split()))
 
-min_cost, path = min_cost_rec(cost, k)
-print('Minimum cost:', min_cost)
-print('Path with minimum cost:', ', '.join(map(str, path)))
+min_cost, path = min_cost_bottom_up(cost, k)
+
+# Formatting output
+output = ' '.join(map(str, path))
+print(output)

@@ -1,39 +1,46 @@
-def find_min_cost_jump(n, k, cost, m):
-    min_cost = float('inf')
-    min_cost_sequence = []
+import sys
 
-    def recurse(current, jumps, total_cost, jump_count):
-        nonlocal min_cost, min_cost_sequence
-        if jump_count == m:
-            if current == n - 1 and total_cost < min_cost:
-                min_cost = total_cost
-                min_cost_sequence = jumps.copy()
-            return
+def min_cost_brute_force(n, k, m, cost):
+    def explore(platform, jumps_remaining, path):
+        if jumps_remaining == 0:
+            return (0, path) if platform >= n else (float('inf'), [])
+        if platform >= n:
+            return (float('inf'), [])
 
-        if jump_count > m or current == n - 1:
-            return
+        min_cost = float('inf')
+        min_path = []
+        for jump in range(1, k + 1):
+            next_platform = platform + jump
+            if next_platform < n:
+                jump_cost = cost[next_platform]
+            else:
+                jump_cost = 0  # No cost if jumping to the other side of the river
 
-        for i in range(1, k + 1):
-            if current + i < n:
-                new_jump = current + i
-                jumps.append(new_jump)
-                recurse(new_jump, jumps, total_cost + cost[new_jump], jump_count + 1)
-                jumps.pop()
+            current_cost, current_path = explore(next_platform, jumps_remaining - 1, path + [platform])
+            current_cost += jump_cost
 
-    recurse(0, [0], cost[0], 1)
-    return min_cost_sequence, min_cost
+            if current_cost < min_cost:
+                min_cost = current_cost
+                min_path = current_path
 
-# Input
-n = 8
-k = 4
-cost = [12, 5, 8, 9, 11, 13, 16, 1]
-m = 4
+        return min_cost, min_path
 
-# Output
-min_cost_jump_indices, min_cost = find_min_cost_jump(n, k, cost, m)
+    min_cost, min_path = explore(0, m, [])
+    return min_path
 
-# Print the minimum cost and the sequence of jumps
-print(f"Minimum Cost: {min_cost}")
-print("Jump Sequence:")
-for index in min_cost_jump_indices:
-    print(index)
+def main():
+    # Reading input from stdin
+    first_line = sys.stdin.readline().strip()
+    n, k, m = map(int, first_line.split())
+
+    second_line = sys.stdin.readline().strip()
+    cost = list(map(int, second_line.split()))
+
+    min_path = min_cost_brute_force(n, k, m, cost)
+
+    # Formatting output
+    output = ' '.join(map(str, min_path))
+    print(output)
+
+if __name__ == "__main__":
+    main()
